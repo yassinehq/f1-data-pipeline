@@ -2,7 +2,7 @@
 
 Pipeline de données automatisé qui collecte, nettoie et stocke les données de chaque Grand Prix de Formule 1, puis les expose dans un dashboard en ligne.
 
-**[▶ Démo live](https://LIEN-STREAMLIT.streamlit.app)** · Mise à jour automatique chaque lundi
+**[▶ Démo live](https://yaseen-f1-data.streamlit.app)** · Mise à jour automatique chaque lundi
 
 ![Aperçu du dashboard](docs/apercu.gif)
 
