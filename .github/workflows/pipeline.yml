@@ -1,0 +1,43 @@
+name: Pipeline F1
+
+on:
+  schedule:
+    - cron: "0 6 * * 1"   # chaque lundi à 6h UTC, au lendemain des GP
+  workflow_dispatch:       # bouton « Run workflow » pour lancer à la main
+
+permissions:
+  contents: write          # pour commit la base mise à jour
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - run: pip install -r requirements.txt
+
+      - name: Tests qualité
+        run: pytest -q
+
+      - name: Cache FastF1
+        uses: actions/cache@v4
+        with:
+          path: cache
+          key: fastf1-${{ github.run_id }}
+          restore-keys: fastf1-
+
+      - name: Lancer le pipeline
+        run: python -m src.pipeline
+
+      - name: Commit de la base
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/f1.duckdb
+          git diff --cached --quiet || git commit -m "data: mise à jour automatique $(date -u +%F)"
+          git push
